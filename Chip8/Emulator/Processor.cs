@@ -7,7 +7,6 @@ namespace Chip8.Emulator
 {
     class Processor
     {
-
         private Emulator emulator;
 
         public Processor(Emulator emulator)
@@ -25,23 +24,33 @@ namespace Chip8.Emulator
             emulator.registers[register].SetValue(data);
         }
 
-        private void DecodeInstruction(int instruction)
+        public void DecodeInstruction(int instruction)
         {
-            // yeah, this is a bit messy...
+            // yeah, this is a bit messy, ngl...
             // perhaps i should just pass a byte[] instead.
+
+            // First and last 4 bits are used to determine
+            // the kind of instruction.
             byte firstNibble = (byte) (instruction >> 12 & 0xF);
+            byte lastNibble = (byte) (instruction & 0xF);
+
+            // Registers are refered to by the 2nd and 3rd nibbles in all instructions.
             byte regx = (byte) (instruction >> 8 & 0xF);
             byte regy = (byte) (instruction >> 4 & 0xF);
-            byte lastNibble = (byte) (instruction & 0xF);
+
+            // Constants and addresses are represented by the 
+            // last 8 and 12 bits respectively
             byte number = (byte)(instruction & 0xFF);
             int address = instruction & 0xFFF;
 
+            // fingers crossed that i got this right so 
+            // that I'll never have to touch it again.
             switch (firstNibble)
             {
-                case 0:
+                case 0x0:
                     switch (address)
                     {
-                        case 0:
+                        case 0x000:
                             NoOp();
                             break;
                         case 0x0E0:
@@ -52,52 +61,52 @@ namespace Chip8.Emulator
                             break;
                     }
                     break;
-                case 1:
+                case 0x1:
                     JumpToAddress(address);
                     break;
-                case 2:
+                case 0x2:
                     CallSubRoutine(address);
                     break;
-                case 3:
+                case 0x3:
                     SkipIfEqualConst(regx, number);
                     break;
-                case 4:
+                case 0x4:
                     SkipIfNotEqualConst(regx, number);
                     break;
-                case 5:
+                case 0x5:
                     SkipIfEqualRegister(regx, regy);
                     break;
-                case 6:
+                case 0x6:
                     SetRegisterToConst(regx, number);
                     break;
-                case 7:
+                case 0x7:
                     AddConstToRegister(regx, number);
                     break;
-                case 8:
+                case 0x8:
                     switch (lastNibble)
                     {
-                        case 0:
+                        case 0x0:
                             SetRegisterToRegister(regx, regy);
                             break;
-                        case 1:
+                        case 0x1:
                             SetRegisterOrRegister(regx, regy);
                             break;
-                        case 2:
+                        case 0x2:
                             SetRegisterAndRegister(regx, regy);
                             break;
-                        case 3:
+                        case 0x3:
                             SetRegisterXorRegister(regx, regy);
                             break;
-                        case 4:
+                        case 0x4:
                             AddRegisterToRegister(regx, regy);
                             break;
-                        case 5:
+                        case 0x5:
                             SubtractRegisterFromRegister(regx, regy);
                             break;
-                        case 6:
+                        case 0x6:
                             BitshiftRegisterRight(regx);
                             break;
-                        case 7:
+                        case 0x7:
                             SubtractReverseRegisters(regx, regy);
                             break;
                         case 0xE:
@@ -160,6 +169,9 @@ namespace Chip8.Emulator
                             throw new Exception("Unknown instruction " + instruction);
                     }
                     break;
+
+                default:
+                    throw new Exception("Unknown instruction " + instruction);
             }
 
         }

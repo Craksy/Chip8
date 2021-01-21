@@ -23,12 +23,12 @@ namespace Chip8
             IsMouseVisible = true;
         }
 
-        private void RenderBuffer()
+        private void RenderBuffer(byte[] data)
         {
             spriteBatch.Begin();
             for(int i = 0; i < 256; i++) //for every byte in the screen buffer
             {
-                byte byt = screenBuffer[i];
+                byte byt = data[i];
                 for (int j = 0; j < 8; j++) //for every bit in that byte
                 {
                     if (((byt>>j) & 1) == 1)
@@ -72,8 +72,6 @@ namespace Chip8
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            RenderBuffer();
 
             base.Draw(gameTime);
         }

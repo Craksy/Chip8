@@ -6,7 +6,8 @@ namespace Chip8.Emulator.Memory
 {
     class Register
     {
-        //REVIEW: Just use an int here instead, since it's just going to hold single values anyway?
+        // REVIEW: Just use an int here instead? 
+        // it's just going to hold single values anyway
         private byte[] memory; 
 
         public Register(int bytes = 1)
