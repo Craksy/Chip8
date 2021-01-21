@@ -12,7 +12,7 @@ namespace Chip8
 
         private Texture2D pixelSprite;
 
-        private byte[] screenBuffer;
+        private byte[] screenBuffer; //TODO: read the upper 256 bytes of the emulator RAM instead of having a local variable.
         private int pixelSize;
         private Color screenColor;
 
