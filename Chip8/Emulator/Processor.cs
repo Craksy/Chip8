@@ -10,13 +10,25 @@ namespace Chip8.Emulator
 {
     class Processor
     {
-        /*
-         * Acts as instruction decoder, and holds the implementation for all of the instructions.
-         * Refer to https://en.wikipedia.org/wiki/CHIP-8#Opcode_table for a more detailed description of each.
-         * 
-         * A reference to the `Emulator` instance is passed to the constructor so that each instruction can access
-         * and modify the rest of the system (ram, registers, timers, etc)
-         */
+        /// <summary>
+        /// 
+        /// Acts as instruction decoder, and holds the implementation for all of the instructions.
+        /// Refer to https://en.wikipedia.org/wiki/CHIP-8#Opcode_table for a more detailed description of each.
+        /// 
+        /// A reference to the `Emulator` instance is passed to the constructor so that each instruction can access
+        /// and modify the rest of the system (ram, registers, timers, etc)
+        ///
+        /// A word of advice (actually more like a big ass excuse for making a mess of things):
+        /// This is a pretty big class. Due to the complex nature of a CPU, a class like this doesn't lend itself
+        /// to the most elegant or pretty implementations.
+        /// First of there's the instruction decoder which is inevitably going to be a huge load of conditionals
+        /// (unless you feel like doing some crazy, black magic regex fuckery).
+        /// Secondly there's bound to be a LOT of methods associated with the actual instructions.
+        /// As a result, this can seem a bit bloated when scrolling through, even though there are really just
+        /// those two main parts; the instruction decoder followed by a series of instruction methods.
+        /// </summary>
+
+
         private Emulator emulator;
         private Random random;
 

@@ -22,9 +22,8 @@ namespace Chip8.Emulator
         
         public byte[] registers;
         public short addressRegister;
-        private Processor processor;
         public short instructionPointer;
-        private bool run;
+        private Processor processor;
 
         public double delayTimer, soundTimer;
 
@@ -39,7 +38,6 @@ namespace Chip8.Emulator
             addressRegister = 0;
             delayTimer = 0;
             soundTimer = 0;
-            run = true;
         }
 
         /// <summary>
@@ -61,7 +59,6 @@ namespace Chip8.Emulator
 
         public byte[] GetFrameBuffer()
         {
-            updated = false;
             // There's some off-by-one shit going on here..
             // I feel like the range should be 0xF00 + 0xFF
             // but that leaves me 1 byte short...
@@ -70,6 +67,7 @@ namespace Chip8.Emulator
 
         private void SwitchEndianess(byte[] data)
         {
+            // TODO: verify that this is not needed and delete.
             for(int i = 0; i<data.Length-2; i += 2)
             {
                 var tmp = data[i + 1];
@@ -91,6 +89,7 @@ namespace Chip8.Emulator
             byte[] instruction = ram.Read(instructionPointer, 2);
 
             //swap the two bytes to read them as big endian.
+            //i'm doing this here, because I'm not sure if we want to be swapping endianess on data bytes.
             byte tmp = instruction[0];
             instruction[0] = instruction[1];
             instruction[1] = tmp;
