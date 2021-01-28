@@ -14,7 +14,7 @@ namespace Chip8.Emulator.Memory
 
         public byte[] Read(int offset, int bytes = 1)
         {
-            byte[] result = memory[new Range(offset, offset + bytes)];
+            byte[] result = memory[offset..(offset + bytes)];
             return result;
         }
 

@@ -15,14 +15,14 @@ namespace Chip8.Emulator.Memory
             memory = new byte[bytes];
         }
 
-        public byte[] GetValue()
+        public int GetValue()
         {
-            return memory;
+            return BitConverter.ToInt16(memory);
         }
 
-        public void SetValue(byte[] data)
+        public void SetValue(byte data)
         {
-            memory = data;
+            memory[0] = data;
         }
     }
 }
