@@ -8,7 +8,14 @@ namespace Chip8.Emulator
 {
     class Emulator
     {
-        // use public methods instead of exposing these members directly?
+
+        /// <summary>
+        /// The "heart" of the CHIP-8 emulation.
+        /// This class holds the registers, ram, timers and CPU, and ties it all together to a (hopefully)
+        /// functional system. The only things not managed directly by this class is display and input, 
+        /// which is handled by the MonoGame library in the main `Game` class.
+        /// </summary>
+
         public Ram ram;
         public Stack<short> stack;
         public bool updated;
@@ -19,21 +26,35 @@ namespace Chip8.Emulator
         public short instructionPointer;
         private bool run;
 
+        public double delayTimer, soundTimer;
+
         public Emulator()
         {
             ram = new Ram(0x1000);
-            //REVIEW: Could probably make this a bit larger.
             stack = new Stack<short>(128);
             registers = new byte[16];
             registers.Initialize();
-            addressRegister = 0;
             processor = new Processor(this);
             instructionPointer = 0x200; // Programs traditionally start at mem addr 0x200
+            addressRegister = 0;
+            delayTimer = 0;
+            soundTimer = 0;
             run = true;
         }
 
-        public void Clock()
+        /// <summary>
+        /// Update timers and do a single clock cycle.
+        /// </summary>
+        /// <param name="deltaTime">
+        /// time since last call to Update (hopefully this approximates the time since last call to Clock as well)
+        /// </param>
+        public void Clock(double deltaTime)
         {
+            if (delayTimer > 0)
+                delayTimer -= deltaTime;
+            if (soundTimer > 0)
+                soundTimer -= deltaTime;
+
             byte[] nextInstruction = FetchNextInstruction();
             processor.DecodeInstruction(BitConverter.ToInt16(nextInstruction));
         }
@@ -45,18 +66,6 @@ namespace Chip8.Emulator
             // I feel like the range should be 0xF00 + 0xFF
             // but that leaves me 1 byte short...
             return ram.Read(0xF00, 0x100);
-        }
-
-        // REVIEW: is this retarded? just access them via `emulator.registers[N]` instead?
-        // I'm struggling to see any advantages of this approach...
-        public byte ReadRegister(byte register)
-        {
-            return registers[register];
-        }
-
-        public void WriteRegister(byte register, byte data)
-        {
-            registers[register] = data;
         }
 
         private void SwitchEndianess(byte[] data)
@@ -73,6 +82,7 @@ namespace Chip8.Emulator
         {
             byte[] data = System.IO.File.ReadAllBytes(path);
             //SwitchEndianess(data);
+
             ram.Write(data, 0x200);
         }
 
@@ -89,6 +99,5 @@ namespace Chip8.Emulator
             updated = true;
             return instruction;
         }
-
     }
 }
