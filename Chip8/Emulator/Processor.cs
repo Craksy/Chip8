@@ -115,7 +115,7 @@ namespace Chip8.Emulator
                             BitshiftRegisterLeft(regx);
                             break;
                         default:
-                            throw new Exception("Unknown instruction " + instruction);
+                            throw new Exception("Unknown instruction 0x" + instruction.ToString("X"));
                     }
                     break;
                 case 9:
@@ -169,12 +169,12 @@ namespace Chip8.Emulator
                             LoadToRegisters(regx);
                             break;
                         default:
-                            throw new Exception("Unknown instruction " + instruction);
+                            throw new Exception("Unknown instruction 0x" + instruction.ToString("X"));
                     }
                     break;
 
                 default:
-                    throw new Exception("Unknown instruction " + instruction);
+                    throw new Exception("Unknown instruction 0x" + instruction.ToString("X"));
             }
 
         }
@@ -298,65 +298,13 @@ namespace Chip8.Emulator
             emulator.registers[0xF] = collision; //set the carry flag if there was collision.
         }
 
-        private void DrawSprite(byte regx, byte regy, byte height) {
-            //TODO: Rewrite this method. It's a mess.
-            short memPosition = emulator.addressRegister;
-            byte xpos = emulator.registers[regx];
-            byte ypos = emulator.registers[regy];
-            int bitOffset = xpos % 8;
-            byte collision = 0;
-
-            // For every `row` in range `height` read one byte from memory
-            // starting at the position pointed to by the address register.
-            for (int row = 0; row < height; row++) {
-                if (ypos + row >= 32) // if we try to draw beyond the frame buffer.
-                    break;
-
-                int firstByte = 0xF00 + ((ypos + row) * 8) + (xpos / 8); // memory address of the (firs) byte of the framebuffer
-                byte spriteData = emulator.ram.Read(memPosition + row);
-
-                // If the bit offset is not 0, it means that two bytes of the
-                // framebuffer will be affected.
-                if (bitOffset != 0) {
-                    //bitmasks to capture the two offset parts of a byte
-                    byte mask1 = (byte)(0xFF >> bitOffset);
-                    byte mask2 = (byte)~mask1;
-
-                    //making sure that we don't attempt to read beyond the last byte of memory.
-                    int numbytes = firstByte < 0xFFF ? 2 : 1;
-                    byte[] bufferBytes = emulator.ram.Read(firstByte, numbytes);
-
-
-                    // If they share any bits between them, there's going to be a 
-                    // collision when XOR'ed
-                    byte actualByte = numbytes > 1 ? (byte)((bufferBytes[0] & mask1) | (bufferBytes[1] & mask2)) : (byte)(bufferBytes[0] & mask1);
-                    if ((actualByte & spriteData) != 0)
-                        collision = 1;
-
-                    //Modify the bytes and write them back to memory.
-                    bufferBytes[0] ^= (byte)((spriteData >> bitOffset) & 0xFF);
-                    if (numbytes == 2)
-                        bufferBytes[1] ^= (byte)((spriteData << bitOffset) & 0xFF);
-                    emulator.ram.Write(bufferBytes, firstByte);
-                } else {
-                    byte[] b = new byte[1];
-                    b[0] = (byte)(emulator.ram.Read(firstByte) ^ spriteData);
-                    emulator.ram.Write(b, firstByte);
-                }
-
-                emulator.registers[0xF] = collision;
-                emulator.updated = true;
-            }
-        }
-
-
         private void SetRegisterAndRandom(byte regx, byte number) {
             byte r = (byte)(random.Next(0, 255) & number);
             emulator.registers[regx] = r;
         }
 
         private void JumpToOffsetAddress(int address) {
-            throw new NotImplementedException();
+            emulator.instructionPointer = (short)(address + emulator.registers[0]);
         }
 
         private void SetAddressRegister(short address) {
@@ -369,8 +317,10 @@ namespace Chip8.Emulator
         }
 
         private void SubtractRegisterFromRegister(byte regx, byte regy) {
-            byte newValue = (byte)(emulator.registers[regx] - emulator.registers[regy]);
-            emulator.registers[regx] = newValue;
+            byte valx = emulator.registers[regx];
+            byte valy = emulator.registers[regy];
+            emulator.registers[0xF] = (byte)(valx > valy ? 0 : 1);
+            emulator.registers[regx] = (byte)(valx - valy);
         }
 
         private void BitshiftRegisterRight(byte regx) {
@@ -379,7 +329,10 @@ namespace Chip8.Emulator
         }
 
         private void SubtractReverseRegisters(byte regx, byte regy) {
-            throw new NotImplementedException();
+            byte valx = emulator.registers[regx];
+            byte valy = emulator.registers[regy];
+            emulator.registers[0xF] = (byte)(valy > valx ? 0 : 1);
+            emulator.registers[regx] = (byte)(valy - valx);
         }
 
         private void BitshiftRegisterLeft(byte regx) {
