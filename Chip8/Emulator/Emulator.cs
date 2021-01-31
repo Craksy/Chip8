@@ -53,9 +53,9 @@ namespace Chip8.Emulator
             this.keystates = keystates;
 
             if (delayTimer > 0)
-                delayTimer -= deltaTime;
+                delayTimer -= deltaTime*60;
             if (soundTimer > 0)
-                soundTimer -= deltaTime;
+                soundTimer -= deltaTime*60;
 
             if (awaitKeypress == null) {
                 byte[] nextInstruction = FetchNextInstruction();

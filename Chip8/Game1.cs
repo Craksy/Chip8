@@ -19,6 +19,7 @@ namespace Chip8
         private Emulator.Emulator emulator; //note to self: don't name classes after their namespace
 
         private Keys[] keybindings;
+        private bool[] keystates;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -34,6 +35,8 @@ namespace Chip8
                 Keys.J, Keys.K, Keys.L, Keys.U, Keys.I, Keys.O, Keys.N,
                 Keys.H, Keys.Y, Keys.Enter, Keys.Space, Keys.P
             };
+
+            keystates = new bool[16];
         }
 
         protected override void Initialize() {
@@ -56,8 +59,8 @@ namespace Chip8
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\IBM Logo.ch8");
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Maze [David Winter, 199x].ch8");
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Chip8 emulator Logo [Garstyciuks].ch8");
-            //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Tetris [Fran Dachille, 1991].ch8");
-            emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Keypad Test [Hap, 2006].ch8");
+            emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Tetris [Fran Dachille, 1991].ch8");
+            //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Keypad Test [Hap, 2006].ch8");
         }
 
 
@@ -110,7 +113,6 @@ namespace Chip8
         }
 
         private bool[] GetKeyStates() {
-            bool[] keystates = new bool[16];
             KeyboardState state = Keyboard.GetState();
             for (int i = 0; i < 16; i++) {
                 keystates[i] = state.IsKeyDown(keybindings[i]);
