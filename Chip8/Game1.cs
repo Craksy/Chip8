@@ -51,6 +51,7 @@ namespace Chip8
 
             // Emulator initialization
             emulator = new Emulator.Emulator();
+            emulator.LoadFontData(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\font-data.bin");
 
             //TODO: actually map file locations to some program names, to make it 
             //easier to load different programs when debugging
@@ -59,8 +60,10 @@ namespace Chip8
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Maze [David Winter, 199x].ch8");
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Chip8 emulator Logo [Garstyciuks].ch8");
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Chip8 Picture.ch8");
-            emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Minimal game [Revival Studios, 2007].ch8");
+            //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Minimal game [Revival Studios, 2007].ch8");
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Particle Demo [zeroZshadow, 2008].ch8");
+            emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Tetris [Fran Dachille, 1991].ch8");
+
 
             //__DebugRendering();
         }

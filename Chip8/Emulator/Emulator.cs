@@ -82,6 +82,11 @@ namespace Chip8.Emulator
             ram.Write(data, 0x200);
         }
 
+        public void LoadFontData(string path) {
+            byte[] data = System.IO.File.ReadAllBytes(path);
+            ram.Write(data, 0);
+        }
+
         private byte[] FetchNextInstruction()
         {
             byte[] instruction = ram.Read(instructionPointer, 2);

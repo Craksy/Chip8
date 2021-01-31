@@ -209,7 +209,8 @@ namespace Chip8.Emulator
         }
 
         private void PointAddressRegisterToCharacter(byte regx) {
-            throw new NotImplementedException();
+            byte character = emulator.registers[regx];
+            emulator.addressRegister = (short)(character * 5);
         }
 
         private void BinaryCodedDecimal(byte regx) {
