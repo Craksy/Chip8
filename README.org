@@ -11,7 +11,7 @@ the mid-1970s. CHIP-8 programs are run on a CHIP-8 virtual machine. It was made
 to allow video games to be more easily programmed for these computers.
 #+end_quote
 
-It's a little toy project I made to get familiar with C#.
+It's a little toy project I'm making to get familiar with C#.
 Additionally i rushed through a lot of it, just to get to a working prototype.
 As a result it's probably filled with weird solutions and questionable design
 decisions.
@@ -61,3 +61,12 @@ Suggestions and feedback is very welcome, and would be greatly appreciated.
 | FX55    | MEM     | reg_dump(Vx &I)   | Stores V0 to VX (including VX) in memory starting at address I.                                                                                                             |
 | FX65    | MEM     | reg_load(Vx &I)   | Fills V0 to VX (including VX) with values from memory starting at address I. The offset from I is increased by 1 for each value written but I itself is left unmodified.[d] |
 |---------+---------+-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+
+
+
+* Todo
+
+- [ ] Implement the rest of the actual emulator
+- [ ] Make an interface for changing settings and loading ROMs
+- [ ] Debug utility/visualizer
+- [ ] Pseudo assembler/disassembler

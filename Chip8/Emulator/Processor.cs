@@ -24,7 +24,7 @@ namespace Chip8.Emulator
         /// First of there's the instruction decoder which is inevitably going to be a huge load of conditionals
         /// (unless you feel like doing some crazy, black magic regex fuckery).
         /// Secondly there's bound to be a LOT of methods associated with the actual instructions.
-        /// As a result, this can seem a bit bloated when scrolling through, even though there are really just
+        /// As a result this can seem a bit bloated when scrolling through, even though there are really just
         /// those two main parts; the instruction decoder followed by a series of instruction methods.
         /// </summary>
 
@@ -32,37 +32,33 @@ namespace Chip8.Emulator
         private Emulator emulator;
         private Random random;
 
-        public Processor(Emulator emulator)
-        {
+        public Processor(Emulator emulator) {
             this.emulator = emulator;
             random = new Random(1234); //initializing with a seed for debugging purposes.
         }
 
-        public void DecodeInstruction(short instruction)
-        {
+        public void DecodeInstruction(short instruction) {
             //this is a bit messy, ngl...
 
             // First and last 4 bits are used to determine the kind of instruction.
             // Also acts as argument for a few instructions.
-            byte firstNibble = (byte) (instruction >> 12 & 0xF);
-            byte lastNibble = (byte) (instruction & 0xF);
+            byte firstNibble = (byte)(instruction >> 12 & 0xF);
+            byte lastNibble = (byte)(instruction & 0xF);
 
             // Registers are refered to by the 2nd and 3rd nibbles in all instructions.
-            byte regx = (byte) (instruction >> 8 & 0xF);
-            byte regy = (byte) (instruction >> 4 & 0xF);
+            byte regx = (byte)(instruction >> 8 & 0xF);
+            byte regy = (byte)(instruction >> 4 & 0xF);
 
             // Constants and addresses are represented by the 
-            // last 8 and 12 bits respectively
+            // first 8 and 12 bits respectively
             byte number = (byte)(instruction & 0xFF);
-            short address = (short) (instruction & 0xFFF);
+            short address = (short)(instruction & 0xFFF);
 
             // fingers crossed that i got this right so 
             // that I'll never have to touch it again.
-            switch (firstNibble)
-            {
+            switch (firstNibble) {
                 case 0x0:
-                    switch (address)
-                    {
+                    switch (address) {
                         case 0x000:
                             NoOp();
                             break;
@@ -96,8 +92,7 @@ namespace Chip8.Emulator
                     AddConstToRegister(regx, number);
                     break;
                 case 0x8:
-                    switch (lastNibble)
-                    {
+                    switch (lastNibble) {
                         case 0x0:
                             SetRegisterToRegister(regx, regy);
                             break;
@@ -142,7 +137,7 @@ namespace Chip8.Emulator
                     SetRegisterAndRandom(regx, number);
                     break;
                 case 0xD:
-                    DrawSprite(regx, regy, lastNibble);
+                    DrawSprite2(regx, regy, lastNibble);
                     break;
                 case 0xE:
                     if (number == 0x9E)
@@ -151,8 +146,7 @@ namespace Chip8.Emulator
                         SkipIfNotKeyPressed(regx);
                     break;
                 case 0xF:
-                    switch (number)
-                    {
+                    switch (number) {
                         case 0x07:
                             SetRegisterDelayTimer(regx);
                             break;
@@ -190,76 +184,69 @@ namespace Chip8.Emulator
             }
 
         }
-        
-////////////////////////////////////////////////////////////
-///////////// Instruction implementations //////////////////
-////////////////////////////////////////////////////////////
-        private void SetRegisterDelayTimer(byte regx)
-        {
+
+        ////////////////////////////////////////////////////////////
+        ///////////// Instruction implementations //////////////////
+        ////////////////////////////////////////////////////////////
+        private void SetRegisterDelayTimer(byte regx) {
+            emulator.registers[regx] = (byte)(emulator.delayTimer);
+        }
+
+        private void WaitForKeyPress(byte regx) {
             throw new NotImplementedException();
         }
 
-        private void WaitForKeyPress(byte regx)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void SetDelayTimerRegister(byte regx)
-        {
+        private void SetDelayTimerRegister(byte regx) {
             emulator.delayTimer = emulator.registers[regx];
         }
 
-        private void SetSoundTimerRegister(byte regx)
-        {
-            throw new NotImplementedException();
+        private void SetSoundTimerRegister(byte regx) {
+            emulator.soundTimer = emulator.registers[regx];
         }
 
-        private void AddRegisterToAddressRegister(byte regx)
-        {
+        private void AddRegisterToAddressRegister(byte regx) {
             emulator.addressRegister += emulator.registers[regx];
         }
 
-        private void PointAddressRegisterToCharacter(byte regx)
-        {
+        private void PointAddressRegisterToCharacter(byte regx) {
             throw new NotImplementedException();
         }
 
-        private void BinaryCodedDecimal(byte regx)
-        {
+        private void BinaryCodedDecimal(byte regx) {
             throw new NotImplementedException();
         }
 
-        private void DumpRegisters(byte register)
-        {
+        private void DumpRegisters(byte register) {
             short address = emulator.addressRegister;
-            byte[] registers = emulator.registers[0..register];
+            byte[] registers = emulator.registers[0..(register + 1)];
             emulator.ram.Write(registers, address);
         }
 
-        private void LoadToRegisters(byte register)
-        {
+        private void LoadToRegisters(byte register) {
             short address = emulator.addressRegister;
             byte[] memoryValues = emulator.ram.Read(address, register + 1);
-            for (int i = 0; i < memoryValues.Length; i++)
-            {
+            for (int i = 0; i < memoryValues.Length; i++) {
                 emulator.registers[i] = memoryValues[i];
             }
         }
 
-        private void SkipIfNotKeyPressed(byte regx)
-        {
-            throw new NotImplementedException();
+        private void SkipIfNotKeyPressed(byte regx) {
+            byte key = emulator.registers[regx];
+            if (!emulator.keystates[key])
+                emulator.instructionPointer += 2;
         }
 
-        private void SkipIfKeyPressed(byte regx)
-        {
-            throw new NotImplementedException();
+        private void SkipIfKeyPressed(byte regx) {
+            byte key = emulator.registers[regx];
+            if (emulator.keystates[key])
+                emulator.instructionPointer += 2;
         }
 
         /// <summary>
-        /// Draw a sprite to the display at the X,Y position given by
-        /// Registers `regx` and `regy`.
-        /// The sprite is 8 pixels wide, and `height` pixels tall, and is read
+        /// OPCODE: DXYN
+        /// Draw a sprite to the display at the x,y position given by
+        /// Registers X and Y.
+        /// The sprite is 8 pixels wide, and N+1 pixels tall, and is read
         /// from memory starting at the position pointed to by the address register.
         /// ie. each row of the sprite is one byte read from memory.
         /// 
@@ -271,8 +258,42 @@ namespace Chip8.Emulator
         /// <param name="regx">Register that holds the X coordinate to draw to</param>
         /// <param name="regy">Register that holds the Y coordinate to draw to</param>
         /// <param name="height">the height of the sprite</param>
-        private void DrawSprite(byte regx, byte regy, byte height)
-        {
+        private void DrawSprite2(byte regx, byte regy, byte height) {
+            byte x = emulator.registers[regx];
+            byte y = emulator.registers[regy];
+            int offset = x % 8;
+            byte collision = 0;
+
+            for (int row = 0; row < height; row++) {
+                byte spriteRow = emulator.ram.Read(emulator.addressRegister + row); //read the next row of the sprite
+                int frameBufferIndex = 0xF00 + ((y + row) * 8) + x / 8; // get the location in memory
+
+                if (0xF00 > frameBufferIndex || frameBufferIndex > 0xFFF)
+                    continue;
+
+                // If the bit offset is non-zero and we're not writing to the last byte of the frame buffer, 
+                // it means that two bytes will be affected.
+                if (frameBufferIndex < 0xFFF && offset > 0) {
+                    byte[] oldBufferBytes = emulator.ram.Read(frameBufferIndex, 2); //Read 2 bytes from the framebuffer
+                    Array.Reverse(oldBufferBytes); // converting to big endian
+                    ushort oldBuffer = BitConverter.ToUInt16(oldBufferBytes); //convert to unsigned short
+                    if ((oldBuffer & (spriteRow << (8 - offset))) != 0) //check for collision
+                        collision = 1; 
+                    ushort newBuffer = (ushort)(oldBuffer ^ (spriteRow << (8 - offset))); //XOR the offset sprite data on top of old buffer
+                    byte[] newBufferBytes = BitConverter.GetBytes(newBuffer); //convert back to byte array
+                    Array.Reverse(newBufferBytes); // convert to big endian
+                    emulator.ram.Write(newBufferBytes, frameBufferIndex); //write back to memory
+                } else {
+                    byte bufferByte = emulator.ram.Read(frameBufferIndex);
+                    if ((spriteRow & bufferByte) != 0)
+                        collision = 1;
+                    emulator.ram.Write((byte)(spriteRow^bufferByte), frameBufferIndex);
+                }
+            }
+            emulator.registers[0xF] = collision; //set the carry flag if there was collision.
+        }
+
+        private void DrawSprite(byte regx, byte regy, byte height) {
             //TODO: Rewrite this method. It's a mess.
             short memPosition = emulator.addressRegister;
             byte xpos = emulator.registers[regx];
@@ -282,171 +303,152 @@ namespace Chip8.Emulator
 
             // For every `row` in range `height` read one byte from memory
             // starting at the position pointed to by the address register.
-            for (int row = 0; row < height; row++)
-            {
+            for (int row = 0; row < height; row++) {
                 if (ypos + row >= 32) // if we try to draw beyond the frame buffer.
                     break;
 
-                int firstByte = 0xF00 + ((ypos+row) * 8) + (xpos / 8); // memory address of the (firs) byte of the framebuffer
-                byte spriteData = emulator.ram.Read(memPosition + row)[0];
+                int firstByte = 0xF00 + ((ypos + row) * 8) + (xpos / 8); // memory address of the (firs) byte of the framebuffer
+                byte spriteData = emulator.ram.Read(memPosition + row);
 
                 // If the bit offset is not 0, it means that two bytes of the
                 // framebuffer will be affected.
-                if(bitOffset != 0) {
+                if (bitOffset != 0) {
                     //bitmasks to capture the two offset parts of a byte
                     byte mask1 = (byte)(0xFF >> bitOffset);
                     byte mask2 = (byte)~mask1;
 
-                    byte[] bufferBytes = emulator.ram.Read(firstByte, 2);
-                    byte actualByte = (byte)((bufferBytes[0] & mask1) | (bufferBytes[1] & mask2));
+                    //making sure that we don't attempt to read beyond the last byte of memory.
+                    int numbytes = firstByte < 0xFFF ? 2 : 1;
+                    byte[] bufferBytes = emulator.ram.Read(firstByte, numbytes);
+
 
                     // If they share any bits between them, there's going to be a 
                     // collision when XOR'ed
+                    byte actualByte = numbytes > 1 ? (byte)((bufferBytes[0] & mask1) | (bufferBytes[1] & mask2)) : (byte)(bufferBytes[0] & mask1);
                     if ((actualByte & spriteData) != 0)
                         collision = 1;
 
                     //Modify the bytes and write them back to memory.
                     bufferBytes[0] ^= (byte)((spriteData >> bitOffset) & 0xFF);
-                    bufferBytes[1] ^= (byte)((spriteData << bitOffset) & 0xFF);
+                    if (numbytes == 2)
+                        bufferBytes[1] ^= (byte)((spriteData << bitOffset) & 0xFF);
                     emulator.ram.Write(bufferBytes, firstByte);
-                }
-                else // otherwise just modify the one byte at the current index
-                {
+                } else {
                     byte[] b = new byte[1];
-                    b[0] = (byte)(emulator.ram.Read(firstByte)[0] ^ spriteData);
+                    b[0] = (byte)(emulator.ram.Read(firstByte) ^ spriteData);
                     emulator.ram.Write(b, firstByte);
                 }
 
                 emulator.registers[0xF] = collision;
+                emulator.updated = true;
             }
         }
 
-        private void SetRegisterAndRandom(byte regx, byte number)
-        {
-            byte r = (byte) (random.Next(0, 255) & number);
+
+        private void SetRegisterAndRandom(byte regx, byte number) {
+            byte r = (byte)(random.Next(0, 255) & number);
             emulator.registers[regx] = r;
         }
 
-        private void JumpToOffsetAddress(int address)
-        {
+        private void JumpToOffsetAddress(int address) {
             throw new NotImplementedException();
         }
 
-        private void SetAddressRegister(short address)
-        {
+        private void SetAddressRegister(short address) {
             emulator.addressRegister = address;
         }
 
-        private void SkipIfNotEqualRegister(byte regx, byte regy)
-        {
+        private void SkipIfNotEqualRegister(byte regx, byte regy) {
             if (emulator.registers[regx] != emulator.registers[regy])
                 emulator.instructionPointer += 2;
         }
 
-        private void SubtractRegisterFromRegister(byte regx, byte regy)
-        {
+        private void SubtractRegisterFromRegister(byte regx, byte regy) {
             byte newValue = (byte)(emulator.registers[regx] - emulator.registers[regy]);
             emulator.registers[regx] = newValue;
         }
 
-        private void BitshiftRegisterRight(byte regx)
-        {
+        private void BitshiftRegisterRight(byte regx) {
             byte newValue = (byte)(emulator.registers[regx] >> 1);
             emulator.registers[regx] = newValue;
         }
 
-        private void SubtractReverseRegisters(byte regx, byte regy)
-        {
+        private void SubtractReverseRegisters(byte regx, byte regy) {
             throw new NotImplementedException();
         }
 
-        private void BitshiftRegisterLeft(byte regx)
-        {
+        private void BitshiftRegisterLeft(byte regx) {
             byte newValue = (byte)(emulator.registers[regx] << 1);
             emulator.registers[regx] = newValue;
         }
 
-        private void AddRegisterToRegister(byte regx, byte regy)
-        {
+        private void AddRegisterToRegister(byte regx, byte regy) {
             byte newValue = (byte)(emulator.registers[regx] + emulator.registers[regy]);
             emulator.registers[regx] = newValue;
         }
 
-        private void SetRegisterXorRegister(byte regx, byte regy)
-        {
+        private void SetRegisterXorRegister(byte regx, byte regy) {
             byte newValue = (byte)(emulator.registers[regx] & emulator.registers[regy]);
             emulator.registers[regx] = newValue;
         }
 
-        private void SetRegisterAndRegister(byte regx, byte regy)
-        {
+        private void SetRegisterAndRegister(byte regx, byte regy) {
             byte newValue = (byte)(emulator.registers[regx] & emulator.registers[regy]);
             emulator.registers[regx] = newValue;
         }
 
-        private void SetRegisterToRegister(byte regx, byte regy)
-        {
+        private void SetRegisterToRegister(byte regx, byte regy) {
             emulator.registers[regx] = emulator.registers[regy];
         }
 
-        private void SetRegisterOrRegister(byte regx, byte regy)
-        {
+        private void SetRegisterOrRegister(byte regx, byte regy) {
             byte newValue = (byte)(emulator.registers[regx] | emulator.registers[regy]);
             emulator.registers[regx] = newValue;
         }
 
-        private void SetRegisterToConst(byte register, byte number)
-        {
-            emulator.registers[register] =  number;
+        private void SetRegisterToConst(byte register, byte number) {
+            emulator.registers[register] = number;
         }
 
-        private void AddConstToRegister(byte register, byte number)
-        {
+        private void AddConstToRegister(byte register, byte number) {
             byte newValue = (byte)(emulator.registers[register] + number);
-            emulator.registers[register] =  newValue;
+            emulator.registers[register] = newValue;
         }
 
-        private void SkipIfEqualRegister(byte regx, byte regy)
-        {
+        private void SkipIfEqualRegister(byte regx, byte regy) {
             if (emulator.registers[regx] == emulator.registers[regy])
                 emulator.instructionPointer += 2;
         }
 
-        private void SkipIfNotEqualConst(byte register, byte value)
-        {
+        private void SkipIfNotEqualConst(byte register, byte value) {
             if (emulator.registers[register] != value)
                 emulator.instructionPointer += 2;
         }
 
-        private void SkipIfEqualConst(byte register, byte value)
-        {
+        private void SkipIfEqualConst(byte register, byte value) {
             if (emulator.registers[register] == value)
                 emulator.instructionPointer += 2;
         }
 
-        private void CallSubRoutine(short address)
-        {
+        private void CallSubRoutine(short address) {
             emulator.stack.Push(emulator.instructionPointer);
             JumpToAddress(address);
         }
 
-        private void JumpToAddress(short address)
-        {
+        private void JumpToAddress(short address) {
             emulator.instructionPointer = address;
         }
 
-        private void ReturnFromSubroutine()
-        {
+        private void ReturnFromSubroutine() {
             JumpToAddress(emulator.stack.Pop());
         }
 
-        private void ClearDisplay()
-        {
+        private void ClearDisplay() {
             emulator.ram.Write(new byte[0xFF], 0xF00);
+            emulator.updated = true;
         }
 
-        private void NoOp()
-        {
+        private void NoOp() {
             return;
         }
     }

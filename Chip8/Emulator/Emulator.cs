@@ -19,6 +19,8 @@ namespace Chip8.Emulator
         public Ram ram;
         public Stack<short> stack;
         public bool updated;
+        public bool[] keystates;
+
         
         public byte[] registers;
         public short addressRegister;
@@ -41,13 +43,15 @@ namespace Chip8.Emulator
         }
 
         /// <summary>
-        /// Update timers and do a single clock cycle.
+        /// Update timers and keystates before doing a clock cycle.
         /// </summary>
         /// <param name="deltaTime">
         /// time since last call to Update (hopefully this approximates the time since last call to Clock as well)
         /// </param>
-        public void Clock(double deltaTime)
+        public void Clock(double deltaTime, bool[] keystates)
         {
+            this.keystates = keystates;
+
             if (delayTimer > 0)
                 delayTimer -= deltaTime;
             if (soundTimer > 0)
@@ -57,17 +61,11 @@ namespace Chip8.Emulator
             processor.DecodeInstruction(BitConverter.ToInt16(nextInstruction));
         }
 
-        public byte[] GetFrameBuffer()
-        {
-            // There's some off-by-one shit going on here..
-            // I feel like the range should be 0xF00 + 0xFF
-            // but that leaves me 1 byte short...
-            return ram.Read(0xF00, 0x100);
-        }
+        public byte[] GetFrameBuffer() { return ram.Read(0xF00, 0x100); }
 
         private void SwitchEndianess(byte[] data)
         {
-            // TODO: verify that this is not needed and delete.
+            // TODO: verify that this method is not needed and delete.
             for(int i = 0; i<data.Length-2; i += 2)
             {
                 var tmp = data[i + 1];
