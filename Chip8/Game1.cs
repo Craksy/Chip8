@@ -20,8 +20,7 @@ namespace Chip8
 
         private Keys[] keybindings;
 
-        public Game1()
-        {
+        public Game1() {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -30,15 +29,14 @@ namespace Chip8
 
             // This is just a temporary solution for debugging with my weird ass keyboard. 
             // Ultimately i'd like to make a settings menu and not hard code these.
-            keybindings = new Keys[] { 
+            keybindings = new Keys[] {
                 Keys.OemOpenBrackets, Keys.M, Keys.OemComma, Keys.OemPeriod,
                 Keys.J, Keys.K, Keys.L, Keys.U, Keys.I, Keys.O, Keys.N,
-                Keys.H, Keys.Y, Keys.Enter, Keys.Space, Keys.P 
+                Keys.H, Keys.Y, Keys.Enter, Keys.Space, Keys.P
             };
         }
 
-        protected override void Initialize()
-        {
+        protected override void Initialize() {
             // Monogame specific initialization
             base.Initialize();
             graphics.IsFullScreen = false;
@@ -58,12 +56,12 @@ namespace Chip8
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\IBM Logo.ch8");
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Maze [David Winter, 199x].ch8");
             //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Chip8 emulator Logo [Garstyciuks].ch8");
-            emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Tetris [Fran Dachille, 1991].ch8");
+            //emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Tetris [Fran Dachille, 1991].ch8");
+            emulator.ReadROMFromFile(@"C:\Users\Amnesia\source\repos\Chip8\Chip8\ROMS\Keypad Test [Hap, 2006].ch8");
         }
 
 
-        protected override void LoadContent()
-        {
+        protected override void LoadContent() {
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // REVIEW: this is kinda silly.
@@ -72,8 +70,7 @@ namespace Chip8
             pixelSize = 16; // a pixel is 16 pixels, lol
         }
 
-        protected override void Update(GameTime gameTime)
-        {
+        protected override void Update(GameTime gameTime) {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -81,12 +78,10 @@ namespace Chip8
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
+        protected override void Draw(GameTime gameTime) {
             // only update the display if there has been a recent 
             // call to DrawSprite or ClearDisplay
-            if (emulator.updated)
-            {
+            if (emulator.updated) {
                 GraphicsDevice.Clear(screenBackground);
                 byte[] frameBuffer = emulator.GetFrameBuffer();
                 RenderBuffer(frameBuffer);
@@ -96,16 +91,14 @@ namespace Chip8
             base.Draw(gameTime);
         }
 
-        private void RenderBuffer(byte[] data)
-        {
+        private void RenderBuffer(byte[] data) {
             spriteBatch.Begin();
-            for(int i = 0; i < 256; i++) //for every byte in the screen buffer
+            for (int i = 0; i < 256; i++) //for every byte in the screen buffer
             {
                 byte byt = data[i];
                 for (int j = 0; j < 8; j++) //for every bit in that byte
                 {
-                    if (((byt>>7-j) & 1) == 1)
-                    {
+                    if (((byt >> 7 - j) & 1) == 1) {
                         //Calculate x and y coordinates based on bit position.
                         int x = i % 8 * 8 * pixelSize + j * pixelSize;
                         int y = i / 8 * pixelSize;
@@ -116,27 +109,24 @@ namespace Chip8
             spriteBatch.End();
         }
 
-        private bool[] GetKeyStates()
-        {
+        private bool[] GetKeyStates() {
             bool[] keystates = new bool[16];
             KeyboardState state = Keyboard.GetState();
-            for (int i = 0; i < 16; i++)
-            {
+            for (int i = 0; i < 16; i++) {
                 keystates[i] = state.IsKeyDown(keybindings[i]);
             }
             return keystates;
         }
 
-        private void __DebugRendering()
-        {
+        private void __DebugRendering() {
             // just a function that writes some random stuff to the framebuffer
             // so i can see that everything works as expected
-            byte[] randinit = { 15, 240, 255};
-            byte[] randData = {255, 255, 255, 255 ,1, 1, 1, 240 };
+            byte[] randinit = { 15, 240, 255 };
+            byte[] randData = { 255, 255, 255, 255, 1, 1, 1, 240 };
             byte[] rand3 = { 3, 192 };
             emulator.ram.Write(randData, 0xFF8);
             emulator.ram.Write(randinit, 0xF00);
-            emulator.ram.Write(rand3, 0xF00+8);
+            emulator.ram.Write(rand3, 0xF00 + 8);
         }
     }
 }

@@ -20,6 +20,7 @@ namespace Chip8.Emulator
         public Ram ram;
         public Stack<short> stack;
         public bool updated;
+        public byte? awaitKeypress; //null if not awaiting keypress, points to the destination register otherwise
         public bool[] keystates;
 
 
@@ -56,8 +57,17 @@ namespace Chip8.Emulator
             if (soundTimer > 0)
                 soundTimer -= deltaTime;
 
-            byte[] nextInstruction = FetchNextInstruction();
-            processor.DecodeInstruction(BitConverter.ToInt16(nextInstruction));
+            if (awaitKeypress == null) {
+                byte[] nextInstruction = FetchNextInstruction();
+                processor.DecodeInstruction(BitConverter.ToInt16(nextInstruction));
+            } else {
+                for (int i = 0; i < 16; i++) {
+                    if (keystates[i]) {
+                        registers[(int)awaitKeypress] = (byte)i;
+                        awaitKeypress = null;
+                    }
+                }
+            }
         }
 
         public byte[] GetFrameBuffer() { return ram.Read(0xF00, 0x100); }

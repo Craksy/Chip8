@@ -193,7 +193,7 @@ namespace Chip8.Emulator
         }
 
         private void WaitForKeyPress(byte regx) {
-            throw new NotImplementedException();
+            emulator.awaitKeypress = regx;
         }
 
         private void SetDelayTimerRegister(byte regx) {
