@@ -214,7 +214,17 @@ namespace Chip8.Emulator
         }
 
         private void BinaryCodedDecimal(byte regx) {
-            throw new NotImplementedException();
+            //TODO: this could be done a lot smoother with a loop
+            byte[] digits = new byte[3];
+            int number = emulator.registers[regx];
+            digits[0] = (byte)(number / 100);
+            number -= digits[0] * 100;
+            digits[1] = (byte)(number / 10);
+            number -= digits[1];
+            digits[2] = (byte)(number);
+
+            emulator.ram.Write(digits, emulator.addressRegister);
+
         }
 
         private void DumpRegisters(byte register) {
