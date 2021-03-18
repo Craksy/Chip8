@@ -35,9 +35,8 @@ namespace Chip8.Emulator
             ram = new Ram(0x1000);
             stack = new Stack<short>(128);
             registers = new byte[16];
-            registers.Initialize();
             processor = new Processor(this);
-            instructionPointer = 0x200; // Programs traditionally start at mem addr 0x200
+            instructionPointer = 0x200; // Chip8 Programs traditionally start at mem addr 0x200
             addressRegister = 0;
             delayTimer = 0;
             soundTimer = 0;

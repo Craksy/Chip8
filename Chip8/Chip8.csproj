@@ -18,6 +18,10 @@
     <EmbeddedResource Include="Icon.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="./ROMS/*.ch8"/>
+    <Content Include="./font-data.bin"/>
+  </ItemGroup>
+  <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
   </ItemGroup>
   <ItemGroup>

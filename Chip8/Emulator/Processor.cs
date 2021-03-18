@@ -176,8 +176,8 @@ namespace Chip8.Emulator
                 default:
                     throw new Exception("Unknown instruction 0x" + instruction.ToString("X"));
             }
-
         }
+
 
         ////////////////////////////////////////////////////////////
         ///////////// Instruction implementations //////////////////
