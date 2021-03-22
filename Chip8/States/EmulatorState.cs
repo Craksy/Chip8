@@ -17,12 +17,11 @@ namespace Chip8.States
         private bool[] keystates;
 
 
-        public EmulatorState(Game1 game, GraphicsDevice screen, SpriteBatch spriteBatch, string rom) 
-        : base(game, screen, spriteBatch)
+        public EmulatorState(Game1 game, string rom) 
+        : base(game)
         {
             pixelColor = Color.Green;
             screenBackground = Color.Black;
-            this.spriteBatch = spriteBatch;
 
             //loads a 16x16 white sprite to act as 'pixel'
             pixelSprite = game.Content.Load<Texture2D>("pixel16"); 
@@ -56,7 +55,7 @@ namespace Chip8.States
         public override void Update(GameTime gameTime)
         {
             if (Keyboard.GetState().IsKeyDown(Keys.Escape))
-                game.ChangeState(new MenuState(game, screen, spriteBatch));
+                game.ChangeState(new MenuState(game));
 
 
             emulator.Clock(gameTime.ElapsedGameTime.TotalSeconds, GetKeyStates());

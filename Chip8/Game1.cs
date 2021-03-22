@@ -12,11 +12,13 @@ namespace Chip8
 {
     public class Game1 : Game
     {
+        public SpriteBatch spriteBatch;
+        public Color screenBackgroundColor;
+        public Color screenForegroundColor;
+
         private const int SCREEN_WIDTH = 1024;
         private const int SCREEN_HEIGHT = 512;
         private GraphicsDeviceManager graphics;
-        private SpriteBatch spriteBatch;
-
         private State nextState;
         private State currentState;
 
@@ -44,8 +46,7 @@ namespace Chip8
             //before trying to load sprites etc.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            string pathToRom = @"./ROMS/Tetris [Fran Dachille, 1991].ch8";
-            currentState = new EmulatorState(this, GraphicsDevice, spriteBatch, pathToRom);
+            currentState = new MenuState(this);
             nextState = null;
         }
 

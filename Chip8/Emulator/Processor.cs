@@ -16,10 +16,9 @@ namespace Chip8.Emulator
     /// A reference to the `Emulator` instance is passed to the constructor so that each instruction can access
     /// and modify the rest of the system (ram, registers, timers, etc)
     ///
-    /// This is a pretty big class. CPUs are complex things and they are responsible for pretty much every action
-    /// that can be done to data within a computer.
-    /// As a result this can seem a bit bloated when scrolling through, even though there are really just
-    /// two main parts; the instruction decoder followed by a series of instruction methods.
+    /// This is a pretty big class and it can seem a bit bloated when scrolling through, 
+    /// even though there are really just two main parts; the instruction decoder 
+    /// followed by a series of instruction methods.
     /// </summary>
     class Processor
     {
@@ -179,9 +178,6 @@ namespace Chip8.Emulator
         }
 
 
-        ////////////////////////////////////////////////////////////
-        ///////////// Instruction implementations //////////////////
-        ////////////////////////////////////////////////////////////
         private void SetRegisterDelayTimer(byte regx) {
             emulator.registers[regx] = (byte)(emulator.delayTimer);
         }
@@ -208,7 +204,6 @@ namespace Chip8.Emulator
         }
 
         private void BinaryCodedDecimal(byte regx) {
-            //TODO: this could be done a lot smoother with a loop
             byte[] digits = new byte[3];
             int number = emulator.registers[regx];
             digits[0] = (byte)(number / 100);

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Diagnostics;
 
 using Chip8.Emulator.Memory;
 
@@ -46,7 +44,7 @@ namespace Chip8.Emulator
         /// Update timers and keystates before doing a clock cycle.
         /// </summary>
         /// <param name="deltaTime">
-        /// time since last call to Update (hopefully this approximates the time since last call to Clock as well)
+        /// time since last call to Update
         /// </param>
         public void Clock(double deltaTime, bool[] keystates) {
             this.keystates = keystates;

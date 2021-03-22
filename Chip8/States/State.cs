@@ -11,11 +11,10 @@ namespace Chip8.States
         
         public abstract void Draw(GameTime gameTime);
         public abstract void Update(GameTime gameTime);
-        public State(Game1 game, GraphicsDevice screen, SpriteBatch spriteBatch){
+        public State(Game1 game){
             this.game = game;
-            this.screen = screen;
-            this.spriteBatch = spriteBatch;
+            this.screen = game.GraphicsDevice;
+            this.spriteBatch = game.spriteBatch;
         }
-
     }
 }
