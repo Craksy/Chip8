@@ -12,8 +12,8 @@ to allow video games to be more easily programmed for these computers.
 #+end_quote
 
 It's a little toy project I'm making to get familiar with C#.
-Additionally i rushed through a lot of it, just to get to a working prototype.
-As a result it's probably filled with weird solutions and questionable design
+I rushed through a lot of it, just to get to a working prototype and
+as a result it's probably filled with weird solutions and questionable design
 decisions.
 The experienced C# developer may cringe a bit over it. You've been warned.
 
@@ -38,12 +38,12 @@ Suggestions and feedback is very welcome, and would be greatly appreciated.
 | 8XY0    | Assign  | Vx=Vy             | Sets VX to the value of VY.                                                                                                                                                 |
 | 8XY1    | BitOp   | Vx=Vx OR Vy       | Sets VX to VX or VY. (Bitwise OR operation)                                                                                                                                 |
 | 8XY2    | BitOp   | Vx=Vx&Vy          | Sets VX to VX and VY. (Bitwise AND operation)                                                                                                                               |
-| 8XY3[a] | BitOp   | Vx=Vx^Vy          | Sets VX to VX xor VY.                                                                                                                                                       |
+| 8XY3    | BitOp   | Vx=Vx^Vy          | Sets VX to VX xor VY.                                                                                                                                                       |
 | 8XY4    | Math    | Vx += Vy          | Adds VY to VX. VF is set to 1 when there's a carry and to 0 when there isn't.                                                                                               |
 | 8XY5    | Math    | Vx -= Vy          | VY is subtracted from VX. VF is set to 0 when there's a borrow and 1 when there isn't.                                                                                      |
-| 8XY6[a] | BitOp   | Vx>>=1            | Stores the least significant bit of VX in VF and then shifts VX to the right by 1.[b]                                                                                       |
-| 8XY7[a] | Math    | Vx=Vy-Vx          | Sets VX to VY minus VX. VF is set to 0 when there's a borrow and 1 when there isn't.                                                                                        |
-| 8XYE[a] | BitOp   | Vx<<=1            | Stores the most significant bit of VX in VF and then shifts VX to the left by 1.[b]                                                                                         |
+| 8XY6    | BitOp   | Vx>>=1            | Stores the least significant bit of VX in VF and then shifts VX to the right by 1.[b]                                                                                       |
+| 8XY7    | Math    | Vx=Vy-Vx          | Sets VX to VY minus VX. VF is set to 0 when there's a borrow and 1 when there isn't.                                                                                        |
+| 8XYE    | BitOp   | Vx<<=1            | Stores the most significant bit of VX in VF and then shifts VX to the left by 1.[b]                                                                                         |
 | 9XY0    | Cond    | if(Vx!=Vy)        | Skips the next instruction if VX doesn't equal VY. (Usually the next instruction is a jump to skip a code block)                                                            |
 | ANNN    | MEM     | I = NNN           | Sets I to the address NNN.                                                                                                                                                  |
 | BNNN    | Flow    | PC=V0+NNN         | Jumps to the address NNN plus V0.                                                                                                                                           |
@@ -63,10 +63,15 @@ Suggestions and feedback is very welcome, and would be greatly appreciated.
 |---------+---------+-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 
 
-
 * Todo
 
-- [ ] Implement the rest of the actual emulator
-- [ ] Make an interface for changing settings and loading ROMs
-- [ ] Debug utility/visualizer
-- [ ] Pseudo assembler/disassembler
+** Implement the rest of the actual emulator
+Most of the instructions are implemented by now, but there are still a few bugs that need to be fixed.
+** Make an interface for changing settings and loading ROMs
+Sort of done, but I'll propbably redo this at some point.
+** Debug utility/visualizer
+TODO
+** Pseudo assembler/disassembler
+TODO
+** Figure out a solution for clock rate throttleling
+TODO
