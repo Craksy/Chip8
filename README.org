@@ -21,6 +21,8 @@ Suggestions and feedback is very welcome, and would be greatly appreciated.
 
 
 * Instruction set
+X,Y: Points to a register
+NNN: Numbers.
 
 |---------+---------+-------------------+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | Opcode  | Type    | C Pseudo          | Explanation                                                                                                                                                                 |

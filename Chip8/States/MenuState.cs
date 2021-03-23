@@ -9,7 +9,7 @@ namespace Chip8.States
     public class MenuState : State
     {
 
-        private SpriteFont font;
+        public SpriteFont font;
         public Menu currentMenu;
 
         public MenuState(Game1 game) 

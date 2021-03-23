@@ -15,29 +15,28 @@ namespace Chip8.Components.Menu
         public float y {get; set;}
         public string[] menuItems;
         public string title;
-
         public Action<int> onItemSelected;
 
-        private SpriteFont font;
         protected SpriteBatch spriteBatch;
         protected Game1 game;
-        private int currentIndex;
-
-        private Keys[] previousPressedKeys;
-        private int previousPressedCount;
         protected MenuState menuState;
+
+        private SpriteFont font;
+        private Keys[] previousPressedKeys;
+        private int currentIndex;
+        private int previousPressedCount;
 
         public Menu(Game1 game, MenuState menuState) 
         : base(game) {
             this.menuState = menuState;
             this.spriteBatch = game.spriteBatch;
             this.game = game;
+            font = menuState.font;
             currentIndex = 0;
             previousPressedKeys = new Keys[]{Keys.Enter};
             previousPressedCount = 1;
             x = 0;
             y = 0;
-            font = Game.Content.Load<SpriteFont>("menuFont");
         }
 
         public override void Update(GameTime gameTime) {
@@ -56,7 +55,6 @@ namespace Chip8.Components.Menu
                 int numItems = menuItems.Length;
                 currentIndex = (currentIndex % numItems + numItems) % numItems;
             }
-
             base.Update(gameTime);
         }
 

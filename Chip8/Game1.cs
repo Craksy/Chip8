@@ -19,6 +19,7 @@ namespace Chip8
         private const int SCREEN_WIDTH = 1024;
         private const int SCREEN_HEIGHT = 512;
         private GraphicsDeviceManager graphics;
+
         private State nextState;
         private State currentState;
 
