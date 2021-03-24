@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Chip8.Emulator.Memory
+namespace Chip8.Emulator
 {
     class Ram
     {

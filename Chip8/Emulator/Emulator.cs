@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Chip8.Emulator.Memory;
 
 namespace Chip8.Emulator
 {
@@ -16,18 +15,16 @@ namespace Chip8.Emulator
         /// </summary>
 
         public Ram ram;
+        private Processor processor;
         public Stack<short> stack;
-        public bool updated;
-        public byte? awaitKeypress; //null if not awaiting keypress, points to the destination register otherwise
-        public bool[] keystates;
-
-
         public byte[] registers;
         public short addressRegister;
         public short instructionPointer;
-        private Processor processor;
-
         public double delayTimer, soundTimer;
+
+        public bool updated;
+        public byte? awaitKeypress; //null if not awaiting keypress, points to the destination register otherwise
+        public bool[] keystates;
 
         public Emulator() {
             ram = new Ram(0x1000);
