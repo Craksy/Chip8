@@ -31,149 +31,54 @@ namespace Chip8.Emulator
         }
 
         public void DecodeInstruction(short instruction) {
-            //this is a bit messy, ngl...
-
-            // First and last 4 bits are used to determine the kind of instruction.
-            // Also acts as argument for a few instructions.
+            //nybble the instruction
             byte firstNibble = (byte)(instruction >> 12 & 0xF);
+            byte X = (byte)(instruction >> 8 & 0xF);
+            byte Y = (byte)(instruction >> 4 & 0xF);
             byte lastNibble = (byte)(instruction & 0xF);
-
-            // Registers are refered to by the 2nd and 3rd nibbles in all instructions.
-            byte regx = (byte)(instruction >> 8 & 0xF);
-            byte regy = (byte)(instruction >> 4 & 0xF);
 
             // Constants and addresses are represented by the 
             // first 8 and 12 bits respectively
-            byte number = (byte)(instruction & 0xFF);
-            short address = (short)(instruction & 0xFFF);
+            byte NN = (byte)(instruction & 0xFF);
+            short NNN = (short)(instruction & 0xFFF);
 
-            // fingers crossed that i got this right so 
-            // that I'll never have to touch it again.
-            switch (firstNibble) {
-                case 0x0:
-                    switch (address) {
-                        case 0x000:
-                            NoOp();
-                            break;
-                        case 0x0E0:
-                            ClearDisplay();
-                            break;
-                        case 0x0EE:
-                            ReturnFromSubroutine();
-                            break;
-                    }
-                    break;
-                case 0x1:
-                    JumpToAddress(address);
-                    break;
-                case 0x2:
-                    CallSubRoutine(address);
-                    break;
-                case 0x3:
-                    SkipIfEqualConst(regx, number);
-                    break;
-                case 0x4:
-                    SkipIfNotEqualConst(regx, number);
-                    break;
-                case 0x5:
-                    SkipIfEqualRegister(regx, regy);
-                    break;
-                case 0x6:
-                    SetRegisterToConst(regx, number);
-                    break;
-                case 0x7:
-                    AddConstToRegister(regx, number);
-                    break;
-                case 0x8:
-                    switch (lastNibble) {
-                        case 0x0:
-                            SetRegisterToRegister(regx, regy);
-                            break;
-                        case 0x1:
-                            SetRegisterOrRegister(regx, regy);
-                            break;
-                        case 0x2:
-                            SetRegisterAndRegister(regx, regy);
-                            break;
-                        case 0x3:
-                            SetRegisterXorRegister(regx, regy);
-                            break;
-                        case 0x4:
-                            AddRegisterToRegister(regx, regy);
-                            break;
-                        case 0x5:
-                            SubtractRegisterFromRegister(regx, regy);
-                            break;
-                        case 0x6:
-                            BitshiftRegisterRight(regx);
-                            break;
-                        case 0x7:
-                            SubtractReverseRegisters(regx, regy);
-                            break;
-                        case 0xE:
-                            BitshiftRegisterLeft(regx);
-                            break;
-                        default:
-                            throw new Exception("Unknown instruction 0x" + instruction.ToString("X"));
-                    }
-                    break;
-                case 9:
-                    SkipIfNotEqualRegister(regx, regy);
-                    break;
-                case 0xA:
-                    SetAddressRegister(address);
-                    break;
-                case 0xB:
-                    JumpToOffsetAddress(address);
-                    break;
-                case 0xC:
-                    SetRegisterAndRandom(regx, number);
-                    break;
-                case 0xD:
-                    DrawSprite2(regx, regy, lastNibble);
-                    break;
-                case 0xE:
-                    if (number == 0x9E)
-                        SkipIfKeyPressed(regx);
-                    else if (number == 0xA1)
-                        SkipIfNotKeyPressed(regx);
-                    break;
-                case 0xF:
-                    switch (number) {
-                        case 0x07:
-                            SetRegisterDelayTimer(regx);
-                            break;
-                        case 0x0A:
-                            WaitForKeyPress(regx);
-                            break;
-                        case 0x15:
-                            SetDelayTimerRegister(regx);
-                            break;
-                        case 0x18:
-                            SetSoundTimerRegister(regx);
-                            break;
-                        case 0x1E:
-                            AddRegisterToAddressRegister(regx);
-                            break;
-                        case 0x29:
-                            PointAddressRegisterToCharacter(regx);
-                            break;
-                        case 0x33:
-                            BinaryCodedDecimal(regx);
-                            break;
-                        case 0x55:
-                            DumpRegisters(regx);
-                            break;
-                        case 0x65:
-                            LoadToRegisters(regx);
-                            break;
-                        default:
-                            throw new Exception("Unknown instruction 0x" + instruction.ToString("X"));
-                    }
-                    break;
-
-                default:
-                    throw new Exception("Unknown instruction 0x" + instruction.ToString("X"));
+            switch ((firstNibble, X, Y, lastNibble)){
+                case (0,0,0,0): NoOp(); break;
+                case (0,0,0xE,0): ClearDisplay(); break;
+                case (0,0,0xE,0xE): ReturnFromSubroutine(); break;
+                case (1,_,_,_): JumpToAddress(NNN); break;
+                case (2,_,_,_): CallSubRoutine(NNN); break;
+                case (3,_,_,_): SkipIfEqualConst(X, NN); break;
+                case (4,_,_,_): SkipIfNotEqualConst(X, NN); break;
+                case (5,_,_,0): SkipIfEqualRegister(X, Y); break;
+                case (6,_,_,_): SetRegisterToConst(X, NN); break;
+                case (7,_,_,_): AddConstToRegister(X, NN); break;
+                case (8,_,_,0): SetRegisterToRegister(X, Y); break;
+                case (8,_,_,1): SetRegisterOrRegister(X, Y); break;
+                case (8,_,_,2): SetRegisterAndRegister(X, Y); break;
+                case (8,_,_,3): SetRegisterXorRegister(X, Y); break;
+                case (8,_,_,4): AddRegisterToRegister(X, Y); break;
+                case (8,_,_,5): SubtractRegisterFromRegister(X, Y); break;
+                case (8,_,_,6): BitshiftRegisterRight(X); break; 
+                case (8,_,_,7): SubtractReverseRegisters(X, Y); break;
+                case (8,_,_,0xE): BitshiftRegisterLeft(X); break; 
+                case (9,_,_,0): SkipIfNotEqualRegister(X,Y); break; 
+                case (0xA,_,_,_): SetAddressRegister(NNN); break; 
+                case (0xB,_,_,_): JumpToOffsetAddress(NNN); break;
+                case (0xC,_,_,_): SetRegisterAndRandom(X,NN); break;
+                case (0xD,_,_,_): DrawSprite2(X,Y,lastNibble); break;
+                case (0xE,_,9,0xE): SkipIfKeyPressed(X); break;
+                case (0xE,_,0xa,1): SkipIfNotKeyPressed(X); break;
+                case (0xF,_,0,7): SetRegisterDelayTimer(X); break;
+                case (0xF,_,0,0xA): WaitForKeyPress(X); break;
+                case (0xF,_,1,5): SetDelayTimerRegister(X); break;
+                case (0xF,_,1,8): SetSoundTimerRegister(X); break;
+                case (0xF,_,1,0xe): AddRegisterToAddressRegister(X); break;
+                case (0xF,_,2,9): PointAddressRegisterToCharacter(X); break;
+                case (0xF,_,3,3): BinaryCodedDecimal(X); break; 
+                case (0xF,_,5,5): DumpRegisters(X); break;
+                case (0xF,_,6,5): LoadToRegisters(X); break;
+                default: throw new Exception("Unknown instruction 0x" + instruction.ToString("X4"));
             }
         }
 
@@ -204,6 +109,7 @@ namespace Chip8.Emulator
         }
 
         private void BinaryCodedDecimal(byte regx) {
+            //REVIEW: I think this might be bugged
             byte[] digits = new byte[3];
             int number = emulator.registers[regx];
             digits[0] = (byte)(number / 100);
@@ -319,6 +225,7 @@ namespace Chip8.Emulator
         }
 
         private void BitshiftRegisterRight(byte regx) {
+            //FIXME: doesn't set the carry flag
             byte newValue = (byte)(emulator.registers[regx] >> 1);
             emulator.registers[regx] = newValue;
         }
@@ -331,6 +238,7 @@ namespace Chip8.Emulator
         }
 
         private void BitshiftRegisterLeft(byte regx) {
+            //FIXME: doesn't set the carry flag
             byte newValue = (byte)(emulator.registers[regx] << 1);
             emulator.registers[regx] = newValue;
         }
