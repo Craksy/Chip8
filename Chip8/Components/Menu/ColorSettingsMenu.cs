@@ -10,19 +10,19 @@ namespace Chip8.Components.Menu
         public ColorSettingsMenu(Game1 game, MenuState menuState) 
         : base(game, menuState) {
             title = "Color Settings";
-            
             menuItems = new string[] {"Foreground", "Background", "Go Back"};
-            onItemSelected = (index) => {
-                switch(index){
-                    case 0:
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        menuState.ChangeMenu(new SettingsMenu(game, menuState));
-                        break;
-                }
-            };
+        }
+
+        protected override void OnItemSelected(int index) {
+            switch(index){
+                case 0:
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    menuState.ChangeMenu(new SettingsMenu(game, menuState));
+                    break;
+            }
         }
     }
 }

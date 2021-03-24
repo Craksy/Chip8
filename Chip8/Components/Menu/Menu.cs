@@ -15,7 +15,6 @@ namespace Chip8.Components.Menu
         public float y {get; set;}
         public string[] menuItems;
         public string title;
-        public Action<int> onItemSelected;
 
         protected SpriteBatch spriteBatch;
         protected Game1 game;
@@ -33,7 +32,8 @@ namespace Chip8.Components.Menu
             this.game = game;
             font = menuState.font;
             currentIndex = 0;
-            previousPressedKeys = new Keys[]{Keys.Enter};
+            //HACK: intitializing like this so that the enter key wont carry over between menu changes
+            previousPressedKeys = new Keys[]{Keys.Enter}; 
             previousPressedCount = 1;
             x = 0;
             y = 0;
@@ -51,12 +51,14 @@ namespace Chip8.Components.Menu
                 if(pressedKeys.Contains(Keys.Up))
                     currentIndex--;
                 if(pressedKeys.Contains(Keys.Enter))
-                    onItemSelected(currentIndex);
+                    OnItemSelected(currentIndex);
                 int numItems = menuItems.Length;
                 currentIndex = (currentIndex % numItems + numItems) % numItems;
             }
             base.Update(gameTime);
         }
+
+        protected virtual void OnItemSelected(int index){ }
 
         public override void Draw(GameTime gameTime) {
             spriteBatch.Begin();

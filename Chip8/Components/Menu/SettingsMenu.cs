@@ -15,20 +15,21 @@ namespace Chip8.Components.Menu{
                 "Keybindings", 
                 "Back"
                 };
-            onItemSelected = (index) => {
-                switch (index) {
-                    case 0:
-                        menuState.ChangeMenu(new ColorSettingsMenu(game, menuState));
-                        break;
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        menuState.ChangeMenu(new MainMenu(game, menuState));
-                        break;
-                }
-            };
+        }
+
+        protected override void OnItemSelected(int index) {
+            switch (index) {
+                case 0:
+                    menuState.ChangeMenu(new ColorSettingsMenu(game, menuState));
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    menuState.ChangeMenu(new MainMenu(game, menuState));
+                    break;
+            }
         }
     }
 }
