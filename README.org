@@ -19,7 +19,7 @@ Suggestions and feedback is very welcome, and would be greatly appreciated.
 
 
 * Spec
-For a more detailed spec, including instruction set, check out the [[Wikipedia article][https://en.wikipedia.org/wiki/CHIP-8#Virtual_machine_description]]
+For a more detailed spec, including instruction set, check out the [[https://en.wikipedia.org/wiki/CHIP-8#Virtual_machine_description][Wikipedia article]]
 Which is more or less the only resource i used while writing this.
 
 ** Memory
