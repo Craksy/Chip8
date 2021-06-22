@@ -8,7 +8,6 @@ namespace Chip8.Emulator
     {
 
         /// <summary>
-        /// The "heart" of the CHIP-8 emulation.
         /// This class holds the registers, ram, timers and CPU, and ties it all together to a (hopefully)
         /// functional system. The only things not managed directly by this class is display and input, 
         /// which is handled by the MonoGame library in the main `Game` class.
@@ -31,7 +30,7 @@ namespace Chip8.Emulator
             stack = new Stack<short>(128);
             registers = new byte[16];
             processor = new Processor(this);
-            instructionPointer = 0x200; // Chip8 Programs traditionally start at mem addr 0x200
+            instructionPointer = 0x200; 
             addressRegister = 0;
             delayTimer = 0;
             soundTimer = 0;
@@ -66,18 +65,8 @@ namespace Chip8.Emulator
 
         public byte[] GetFrameBuffer() { return ram.Read(0xF00, 0x100); }
 
-        private void SwitchEndianess(byte[] data) {
-            // TODO: verify that this method is not needed and delete.
-            for (int i = 0; i < data.Length - 2; i += 2) {
-                var tmp = data[i + 1];
-                data[i + 1] = data[i];
-                data[i] = tmp;
-            }
-        }
-
         public void ReadROMFromFile(string path) {
             byte[] data = System.IO.File.ReadAllBytes(path);
-            //SwitchEndianess(data);
 
             ram.Write(data, 0x200);
         }

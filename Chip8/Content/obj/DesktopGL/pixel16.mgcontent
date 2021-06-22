@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PipelineBuildEvent xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
   <SourceFile>C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/pixel16.png</SourceFile>
-  <SourceTime>2021-01-20T22:39:44.8456817+01:00</SourceTime>
+  <SourceTime>2021-01-31T12:36:13.502826+01:00</SourceTime>
   <DestFile>C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/bin/DesktopGL/pixel16.xnb</DestFile>
-  <DestTime>2021-01-20T22:40:58.4234402+01:00</DestTime>
+  <DestTime>2021-03-18T12:57:53.025265+01:00</DestTime>
   <Importer>TextureImporter</Importer>
   <ImporterTime>2020-08-10T16:17:54+02:00</ImporterTime>
   <Processor>TextureProcessor</Processor>

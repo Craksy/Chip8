@@ -1,7 +1,7 @@
 #+TITLE: CHIP-8
 
 * About
-This is a CHIP-8 emulator written in C#.
+This is a CHIP-8 emulator written in C#. 
 
 From Wikipedia:
 #+begin_quote
@@ -20,17 +20,17 @@ Suggestions and feedback is very welcome, and would be greatly appreciated.
 
 * Spec
 For a more detailed spec, including instruction set, check out the [[https://en.wikipedia.org/wiki/CHIP-8#Virtual_machine_description][Wikipedia article]]
-Which is more or less the only resource i used while writing this.
+which is more or less the only resource i used while writing the emulator.
 
 ** Memory
 Chip8 is an 8bit system with 0x1000 memory locations. The first 0x200 (512) bytes
 was traditionally where the interpreter was lived, but in most emulators
 (this one included) this space is used for font data instead.
 
-The uppermost 0xFF (256) bytes are reserved for the screen buffer.
+The uppermost 0x100 (256) bytes are reserved for the screen buffer.
 Traditionally the next 96 bytes below that was used for the call stack and other internal features, but i implemented the stack seperate from memory.
 
-This leaves the space 0x200-0xF00 for actual programs to run.
+This leaves the space 0x200-0xEFF for actual programs to run.
 
 ** Registers
 There are 16 8bit registers named V0 to VF, although VF is used as the carry flag for many instructions, and shouldn't be used as a general purpose register.
@@ -52,13 +52,10 @@ Chip8 uses a 64x32px monochrome display. The upper 256 bytes of memory acts as a
 
 * Todo
 
-- Implement the rest of the actual emulator
+- Do the sound timer
 - Most of the instructions are implemented by now, but there are still a few bugs that need to be fixed.
-- Make an interface for changing settings and loading ROMs
-Sort of done, but I'll propbably redo this at some point.
 - Debug utility/visualizer
-TODO
 - Pseudo assembler/disassembler
-TODO
-** Figure out a solution for clock rate throttleling
-TODO
+- Figure out a solution for clock speed throttleling. Some ROMS don't use the
+delay timer properly and are only gated by clock speed. There is no
+specification for this, which means that ROMS made for different systems behave completely different.

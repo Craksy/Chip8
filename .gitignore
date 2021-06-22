@@ -1,0 +1,6 @@
+Icon.*
+app.manifest
+bin/
+obj/
+.vs
+.vscode

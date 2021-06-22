@@ -4,9 +4,11 @@
   <Platform>DesktopGL</Platform>
   <Config />
   <SourceFiles>
-    <File>C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/pixel16.png</File>
+    <File>c:/Users/Amnesia/source/repos/Chip8/Chip8/Content/menuFont.spritefont</File>
+    <File>c:/Users/Amnesia/source/repos/Chip8/Chip8/Content/pixel16.png</File>
   </SourceFiles>
   <DestFiles>
+    <File xsi:nil="true" />
     <File xsi:nil="true" />
   </DestFiles>
 </SourceFileCollection>

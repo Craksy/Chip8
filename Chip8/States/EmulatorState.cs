@@ -27,9 +27,10 @@ namespace Chip8.States
             pixelSprite = game.Content.Load<Texture2D>("pixel16"); 
             pixelSize = 16;
 
-            //ready keyboard
+            //ready input
             keystates = new bool[16];
-            keybindings = new Keys[] {
+            //Temporry solution. eventually read from a config file or something
+            keybindings = new Keys[] { 
                 Keys.OemOpenBrackets, Keys.M, Keys.OemComma, Keys.OemPeriod,
                 Keys.J, Keys.K, Keys.L, Keys.U, Keys.I, Keys.O, Keys.N,
                 Keys.H, Keys.Y, Keys.Enter, Keys.Space, Keys.P
@@ -46,8 +47,7 @@ namespace Chip8.States
         {
             if (emulator.updated) {
                 screen.Clear(screenBackground);
-                byte[] frameBuffer = emulator.GetFrameBuffer();
-                RenderBuffer(frameBuffer);
+                RenderBuffer();
                 emulator.updated = false;
             }
         }
@@ -61,15 +61,14 @@ namespace Chip8.States
             emulator.Clock(gameTime.ElapsedGameTime.TotalSeconds, GetKeyStates());
         }
 
-        private void RenderBuffer(byte[] data) {
+        private void RenderBuffer() {
+            byte[] data = emulator.GetFrameBuffer();
             spriteBatch.Begin();
-            for (int i = 0; i < 256; i++) //for every byte in the screen buffer
-            {
+            for (int i = 0; i < 256; i++) {
                 byte byt = data[i];
-                for (int j = 0; j < 8; j++) //for every bit in that byte
-                {
+                for (int j = 0; j < 8; j++) {
                     if (((byt >> 7 - j) & 1) == 1) {
-                        //Calculate x and y coordinates based on bit position.
+                        //Calculate x and y coordinates and draw a pixel if the bit is on.
                         int x = i % 8 * 8 * pixelSize + j * pixelSize;
                         int y = i / 8 * pixelSize;
                         spriteBatch.Draw(pixelSprite, new Vector2(x, y), pixelColor);
@@ -81,9 +80,8 @@ namespace Chip8.States
 
         private bool[] GetKeyStates() {
             KeyboardState state = Keyboard.GetState();
-            for (int i = 0; i < 16; i++) {
+            for (int i = 0; i < 16; i++)
                 keystates[i] = state.IsKeyDown(keybindings[i]);
-            }
             return keystates;
         }
     }

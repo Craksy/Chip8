@@ -1,2 +1,3 @@
 Source File,Dest File,Processor Type,Content Type,Source File Size,Dest File Size,Build Seconds
-"C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/pixel16.png","C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/bin/DesktopGL/pixel16.xnb","TextureProcessor","Texture2DContent",139,1109,0.1574146
+"C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/menuFont.spritefont","C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/bin/DesktopGL/menuFont.xnb","FontDescriptionProcessor","SpriteFontContent",2012,70690,0.2671714
+"C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/pixel16.png","C:/Users/Amnesia/source/repos/Chip8/Chip8/Content/bin/DesktopGL/pixel16.xnb","TextureProcessor","Texture2DContent",139,1109,0.0207818

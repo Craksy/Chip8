@@ -10,7 +10,7 @@ namespace Chip8.States
     {
 
         public SpriteFont font;
-        public Menu currentMenu;
+        private Menu currentMenu;
 
         public MenuState(Game1 game) 
         : base(game)
@@ -26,14 +26,8 @@ namespace Chip8.States
             game.Components.Add(currentMenu);
         }
 
-        public override void Draw(GameTime gameTime)
-        {
-            screen.Clear(Color.Black);
-            currentMenu.Draw(gameTime);
-        }
+        public override void Draw(GameTime gameTime) { }
 
-        public override void Update(GameTime gameTime)
-        {
-        }
+        public override void Update(GameTime gameTime) { }
     }
 }

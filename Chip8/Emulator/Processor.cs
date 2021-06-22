@@ -5,7 +5,6 @@ using System.Text;
 using System.Diagnostics;
 
 
-
 namespace Chip8.Emulator
 {
 
@@ -15,10 +14,6 @@ namespace Chip8.Emulator
     /// 
     /// A reference to the `Emulator` instance is passed to the constructor so that each instruction can access
     /// and modify the rest of the system (ram, registers, timers, etc)
-    ///
-    /// This is a pretty big class and it can seem a bit bloated when scrolling through, 
-    /// even though there are really just two main parts; the instruction decoder 
-    /// followed by a series of instruction methods.
     /// </summary>
     class Processor
     {
@@ -80,8 +75,8 @@ namespace Chip8.Emulator
                 case (0xF,_,6,5): LoadToRegisters(X); break;
                 default: throw new Exception("Unknown instruction 0x" + instruction.ToString("X4"));
             }
-        }
 
+        }
 
         private void SetRegisterDelayTimer(byte regx) {
             emulator.registers[regx] = (byte)(emulator.delayTimer);
@@ -197,6 +192,7 @@ namespace Chip8.Emulator
                 }
             }
             emulator.registers[0xF] = collision; //set the carry flag if there was collision.
+            emulator.updated = true;
         }
 
         private void SetRegisterAndRandom(byte regx, byte number) {

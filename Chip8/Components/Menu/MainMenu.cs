@@ -12,7 +12,6 @@ namespace Chip8.Components.Menu{
         }
 
         protected override void OnItemSelected(int index) {
-            base.OnItemSelected(index);
             switch(index){
                 case 0:
                     menuState.ChangeMenu(new LoadRomMenu(game, menuState, @"./ROMS/"));
@@ -24,7 +23,6 @@ namespace Chip8.Components.Menu{
                     game.Exit();
                     break;
             }
-                
         }
     }
 }
